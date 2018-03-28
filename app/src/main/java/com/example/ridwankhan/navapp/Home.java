@@ -1,6 +1,7 @@
 package com.example.ridwankhan.navapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import  android.app.Fragment;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.Random;
 
 
 /**
@@ -55,10 +59,11 @@ public class Home extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    public void start_click(View v) {
-//        Button start_button = (Button) v;
-//        ((Button) v).setText("Stop");
-    }
+
+    Button btn;
+    TextView txt;
+    boolean firstClick = true;
+    int randomNum;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,13 +72,52 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    }
 
+//        btn =  getView().findViewById(R.id.start_button);
+//
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                btn.setText("Stop");
+//            }
+//        });
+
+
+    }
+    View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        btn = (Button) view.findViewById(R.id.start_button);
+        txt = view.findViewById(R.id.number);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            if (firstClick) {
+                firstClick = false;
+                btn.setText("Stop");
+                btn.setBackgroundColor(Color.RED);
+
+                    Random rn = new Random();
+                    randomNum = rn.nextInt(1023 - 300 + 1) + 300;
+                    txt.setText(Integer.toString(randomNum));
+            }
+            else {
+                btn.setText("Start");
+                btn.setBackgroundColor(Color.GREEN);
+                firstClick = true;
+
+            }
+
+
+
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
