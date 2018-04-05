@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-public class MainActivityNav extends AppCompatActivity  {
+public class MainActivityNav extends AppCompatActivity implements DataCommunication {
 
     private ArrayList<Integer> currSet;
 
@@ -46,6 +46,21 @@ public class MainActivityNav extends AppCompatActivity  {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    @Override
+    public void setCurrentSetArray(ArrayList<Integer> curr){
+        currSet = curr;
+    }
+
+    @Override
+    public ArrayList<Integer> getCurrentSetArray(){
+        return currSet;
+    }
+
+    @Override
+    public void clearCurrSetArray(){
+        currSet.clear();
     }
 
 

@@ -1,5 +1,7 @@
 package com.example.ridwankhan.navapp;
 
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
 import android.app.Fragment;
@@ -57,6 +59,8 @@ public class ledControl extends Fragment {
 
     ArrayList<Integer> sensorVals = new ArrayList<Integer>();
     boolean isSet = false;
+
+    DataCommunication mCallback;
 
     public ledControl() {
         // Required empty public constructor
@@ -197,6 +201,20 @@ public class ledControl extends Fragment {
         return v;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement DataCommunication");
+        }
+    }
+
     private void Disconnect() {
         if (btSocket != null) { //If the btSocket is busy
             try{
@@ -228,12 +246,15 @@ public class ledControl extends Fragment {
 
     private void stopSet(){
         isSet = false;
+        mCallback.setCurrentSetArray(sensorVals);
         msg("Set Stopped");
         System.out.println(Arrays.toString(sensorVals.toArray()));
     }
 
     private void saveSet(){
         // add storage method here, maybe send to graphs here as well
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(this.getId(), new Chart()).commit();
         msg("Set Saved");
     }
 

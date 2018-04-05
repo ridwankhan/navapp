@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class Chart extends Fragment {
 
     LineChart lineChart;
+    DataCommunication mCallback;
 
     public Chart() {
         // Required empty public constructor
@@ -46,6 +47,20 @@ public class Chart extends Fragment {
         return v;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement DataCommunication");
+        }
+    }
+
     private void drawLineChart(){
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
@@ -56,13 +71,18 @@ public class Chart extends Fragment {
         lineChart.setDescription(desc);
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        yValues.add(new Entry(0, 60f));
-        yValues.add(new Entry(1, 50f));
-        yValues.add(new Entry(2, 70f));
-        yValues.add(new Entry(3, 30f));
-        yValues.add(new Entry(4, 50f));
-        yValues.add(new Entry(5, 60f));
-        yValues.add(new Entry(6, 65f));
+        ArrayList<Integer> curr = mCallback.getCurrentSetArray();
+
+        for(Integer i = 0; i < curr.size(); i++){
+            yValues.add(new Entry(i, curr.get(i)));
+        }
+//        yValues.add(new Entry(0, 60f));
+//        yValues.add(new Entry(1, 50f));
+//        yValues.add(new Entry(2, 70f));
+//        yValues.add(new Entry(3, 30f));
+//        yValues.add(new Entry(4, 50f));
+//        yValues.add(new Entry(5, 60f));
+//        yValues.add(new Entry(6, 65f));
 
         LineDataSet set1 = new LineDataSet(yValues, "Data Set 1");
         set1.setFillAlpha(110);
