@@ -38,7 +38,7 @@ public class SetData{
         this.setTimeStamp = setTimeStamp;
         this.weight = weight;
         this.setNumber = setNumber;
-        this.setDataValues = setDataValues;
+        this.setDataValues.addAll(setDataValues);
         //set id to be the increment of last ID in table
     }
 }
