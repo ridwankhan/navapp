@@ -1,5 +1,6 @@
 package com.example.ridwankhan.navapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -61,6 +62,21 @@ public class Chart extends Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) activity;
+            System.out.println("called");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement DataCommunication");
+        }
+    }
+
     private void drawLineChart(){
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
@@ -92,8 +108,8 @@ public class Chart extends Fragment {
         dataSets.add(set1);
 
         LineData data = new LineData(dataSets);
-        data.setValueTextSize(13f);
-        data.setValueTextColor(Color.BLACK);
+        //data.setValueTextSize(13f);
+        //data.setValueTextColor(Color.BLACK);
 
         lineChart.setData(data);
         lineChart.invalidate();

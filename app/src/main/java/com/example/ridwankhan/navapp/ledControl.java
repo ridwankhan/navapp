@@ -1,5 +1,6 @@
 package com.example.ridwankhan.navapp;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -209,8 +210,24 @@ public class ledControl extends Fragment {
         // the callback interface. If not, it throws an exception
         try {
             mCallback = (DataCommunication) context;
+            System.out.println("called");
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
+                    + " must implement DataCommunication");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) activity;
+            System.out.println("called");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
                     + " must implement DataCommunication");
         }
     }
