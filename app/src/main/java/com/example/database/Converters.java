@@ -1,3 +1,5 @@
+package com.example.database;
+import android.arch.persistence.room.*;
 
 public class Converters {
 @TypeConverter
