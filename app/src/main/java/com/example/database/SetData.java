@@ -31,8 +31,9 @@ public class SetData{
     private int weight;
 
     //holds the data values
+    @Embedded
     @ColumnInfo(name="data_values")
-    private ArrayList<Integer> setDataValues;
+    private ArrayList<DataPoint> setDataValues;
 
     //need a constructor for the table
     public SetData(int setID,int exerciseID, Timestamp setTimeStamp, int weight, int setNumber, ArrayList<Integer> setDataValues){
