@@ -4,7 +4,11 @@ import android.arch.persistence.room.*;
 import java.sql.Timestamp;
 import java.util.*;
 
-@Entity(tableName="SetDataTable")
+@Entity(
+    tableName="SetDataTable",
+    indices= arrayOf(Index(value = "exerciseID", name = "exercise_index"))
+)
+
 public class SetData{
     //unique incrementing
     @PrimaryKey

@@ -6,3 +6,9 @@ import android.arch.persistence.room.*;
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ExerciseDao exerciseDao();
 }
+
+AppDatabase db = Room.databaseBuilder(
+    getApplicationContext(),
+    AppDatabase.class,
+    "perfectPumpDB"
+).build();
