@@ -2,7 +2,7 @@
 //String string;
 char inbyte = 0;
 boolean ledon = false;
-int x = 1000;
+//int x = 1000;
 #define led 13
 const int analogInModified = A0;
 int sensorModifiedValue = 0;
@@ -19,7 +19,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   digitalWrite(secondPower,HIGH);
   sendAndroidValues();
-  x++;
+  //x++;
   //when serial values have been received this will be true
   if (Serial.available() > 0)
   {
@@ -94,6 +94,8 @@ void sendAndroidValues()
   //for loop cycles through 4 sensors and sends values via serial
   sensorModifiedValue = analogRead(analogInModified);
   Serial.print(sensorModifiedValue);
+  Serial.print("+");
+  Serial.print(millis());
   //technically not needed but I prefer to break up data values
   //so they are easier to see when debugging
   

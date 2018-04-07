@@ -90,9 +90,10 @@ public class ledControl extends Fragment {
 
                         if (recDataString.charAt(0) == '#')                             //if it starts with # we know it is what we are looking for
                         {
+                            int firstEndIndex = recDataString.indexOf("+");
 
-                            String sensor0 = recDataString.substring(1, endOfLineIndex);             //get sensor value from string between indices 1-5
-
+                            String sensor0 = recDataString.substring(1, firstEndIndex);             //get sensor value from string between indices 1 and the +
+                            String time = recDataString.substring(firstEndIndex+1, endOfLineIndex); // time stamp comes after
                             sensor.setText("Sensor Value: " + sensor0);    //update the textviews with sensor values
                             sensorVals.add(Integer.parseInt(sensor0));      // add the integer to the array
                         }
