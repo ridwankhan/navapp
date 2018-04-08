@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.database.DataPoint;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
@@ -87,10 +88,15 @@ public class Chart extends Fragment {
         lineChart.setDescription(desc);
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        ArrayList<Integer> curr = mCallback.getCurrentSetArray();
+        ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
 
-        for(Integer i = 0; i < curr.size(); i++){
-            yValues.add(new Entry(i, curr.get(i)));
+        for(int i = 0; i < currSetData.size(); i++){
+            DataPoint currData = currSetData.get(i);
+            int newVal = currData.getVal();
+            long newTime = currData.getDataTimestamp();
+
+            //should probably be using newTime instead of i here
+            yValues.add(new Entry(i, newVal));
         }
 //        yValues.add(new Entry(0, 60f));
 //        yValues.add(new Entry(1, 50f));

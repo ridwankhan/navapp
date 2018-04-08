@@ -13,6 +13,13 @@ public class DataPoint{
     @ColumnInfo(name="timestamp")
     private final long dataTimeStamp;
 
+    public int getVal(){
+        return this.val;
+    }
+
+    public long getDataTimestamp(){
+        return this.dataTimeStamp;
+    }
     //need a constructor for the table
     public DataPoint(int val, long dataTimeStamp){
         //set Timestamp to curr time
