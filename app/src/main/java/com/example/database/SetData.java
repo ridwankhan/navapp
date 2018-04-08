@@ -35,11 +35,12 @@ public class SetData{
     @ColumnInfo(name="data_values")
     private ArrayList<DataPoint> setDataValues;
 
+
     //need a constructor for the table
-    public SetData(int setID,int exerciseID, int weight, int setNumber, ArrayList<DataPoint> setDataValues){
+    public SetData(int setID, int exerciseID, int weight, int setNumber, ArrayList<DataPoint> setDataValues){
         //set Timestamp to curr time
-        this.setDataValues = new ArrayList<>();
         this.setID = setID;
+        this.setDataValues = new ArrayList<>();
         this.exerciseID = exerciseID;
         this.setTimeStamp = new Timestamp(System.currentTimeMillis());
         this.weight = weight;

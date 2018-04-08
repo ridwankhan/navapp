@@ -2,6 +2,7 @@ package com.example.ridwankhan.navapp;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
@@ -25,9 +26,11 @@ import android.os.AsyncTask;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import android.os.Handler;
+
+import com.example.database.*;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -58,8 +61,18 @@ public class ledControl extends Fragment {
     private StringBuilder recDataString = new StringBuilder();
     private ConnectedThread mConnectedThread;
 
-    ArrayList<Integer> sensorVals = new ArrayList<Integer>();
+    ArrayList<DataPoint> sensorVals = new ArrayList<>();
     boolean isSet = false;
+
+    final AppDatabase db = Room.databaseBuilder(
+        getActivity().getApplicationContext(),
+        AppDatabase.class,
+        "perfectPumpDB"
+    ).build();
+
+    int currExerciseID;
+    //increments after each set, returns to 0 upon new exercise
+    int currSetNumber = 0;
 
     DataCommunication mCallback;
 
@@ -95,7 +108,15 @@ public class ledControl extends Fragment {
                             String sensor0 = recDataString.substring(1, firstEndIndex);             //get sensor value from string between indices 1 and the +
                             String time = recDataString.substring(firstEndIndex+1, endOfLineIndex); // time stamp comes after
                             sensor.setText("Sensor Value: " + sensor0);    //update the textviews with sensor values
-                            sensorVals.add(Integer.parseInt(sensor0));      // add the integer to the array
+
+                            //let's do a little type conversion so our data point can fit in our custom class
+                            int dataVal = Integer.parseInt(sensor0);
+                            long timeStamp = Long.parseLong(time);
+                            DataPoint newData = new DataPoint(dataVal, timeStamp);
+
+                            //push onto the arrayList
+                            sensorVals.add(newData);
+                            //sensorVals.add(Integer.parseInt(sensor0));      // add the integer to the array
                         }
                         recDataString.delete(0, recDataString.length());                    //clear all string data
                         dataInPrint = "";
@@ -260,6 +281,7 @@ public class ledControl extends Fragment {
     private void startSet(){
         isSet = true;
         sensorVals.clear();
+        currSetNumber++;
         msg("Set Started");
     }
 
@@ -267,11 +289,43 @@ public class ledControl extends Fragment {
         isSet = false;
         mCallback.setCurrentSetArray(sensorVals);
         msg("Set Stopped");
-        System.out.println(Arrays.toString(sensorVals.toArray()));
+        //System.out.println(Arrays.toString(sensorVals.toArray())); this line not gonna work with the custom class
+    }
+
+    private void startExercise(){
+        //assemble instantiation vals for ExerciseData, these should be connected to the form
+        String muscleGroup = "Biceps";
+        String exerciseName = "Curls";
+        currExerciseID = db.exerciseDao().getHighestExerciseID()+1; //this is also a dummy val right now
+
+        //create ExerciseData object
+        ExerciseData currExercise = new ExerciseData(currExerciseID, muscleGroup, exerciseName);
+
+        //insert it into db
+        db.exerciseDao().insertExerciseData(currExercise);
+    }
+
+    private void stopExercise(){
+        //clear out the vals
+        currSetNumber = 0;
     }
 
     private void saveSet(){
         // add storage method here, maybe send to graphs here as well
+
+        //assemble instantiation vals
+        int exerciseID = currExerciseID;
+        int setID = db.exerciseDao().getHighestSetID() + 1;
+        int weight = 20;
+        int setNumber = currSetNumber;
+        ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
+
+        //create SetData object
+        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValues);
+
+        //insert it into db using DAO
+        db.exerciseDao().insertSetData(newSet);
+
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(this.getId(), new Chart()).commit();
         msg("Set Saved");

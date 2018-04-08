@@ -7,11 +7,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.example.database.DataPoint;
+
 import java.util.ArrayList;
 
 public class MainActivityNav extends AppCompatActivity implements DataCommunication {
 
-    private ArrayList<Integer> currSet;
+    private ArrayList<DataPoint> currSet;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -49,12 +51,13 @@ public class MainActivityNav extends AppCompatActivity implements DataCommunicat
     }
 
     @Override
-    public void setCurrentSetArray(ArrayList<Integer> curr){
+    public void setCurrentSetArray(ArrayList<DataPoint> curr){
+
         currSet = curr;
     }
 
     @Override
-    public ArrayList<Integer> getCurrentSetArray(){
+    public ArrayList<DataPoint> getCurrentSetArray(){
         return currSet;
     }
 

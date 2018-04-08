@@ -4,18 +4,18 @@ import android.arch.persistence.room.*;
 import java.sql.Timestamp;
 
 @Entity(
-        tableName="ExerciseDataTable",
-        indices= {@Index(value = "workoutID", name = "workout_index")}
+        tableName="ExerciseDataTable"//,
+        //indices= {@Index(value = "workoutID", name = "workout_index")}
 )
 
 public class ExerciseData{
     //unique incrementing
     @PrimaryKey
-    private final int exerciseID;
+    private int exerciseID;
 
-    //ID of the exercise this is a component of, e.g. dumbbell fly
+    /*//ID of the exercise this is a component of, e.g. dumbbell fly
     @ForeignKey(entity=WorkoutData.class,parentColumns="workoutID",childColumns = "workoutID")
-    private final int workoutID;
+    private final int workoutID;*/
 
     //this class is a wrapper for timestamp SQL recognizes
     @ColumnInfo(name="time_stamp")
@@ -29,9 +29,17 @@ public class ExerciseData{
     @ColumnInfo(name="name")
     private String exerciseName;
 
-    public ExerciseData(int exerciseID,int workoutID, String muscleGroup, String exerciseName ){
+    public void setExerciseID( int exerciseID){
         this.exerciseID = exerciseID;
-        this.workoutID = workoutID;
+    }
+
+    public int exerciseID(){
+        return this.exerciseID;
+    }
+
+    public ExerciseData(int exerciseID,/*int workoutID,*/ String muscleGroup, String exerciseName ){
+        this.exerciseID = exerciseID;
+        //this.workoutID = workoutID;
         this.exerciseTimeStamp = new Timestamp(System.currentTimeMillis());
         this.muscleGroup = muscleGroup;
         this.exerciseName = exerciseName;

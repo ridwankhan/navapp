@@ -14,8 +14,8 @@ public interface ExerciseDao {
     @Query("SELECT exerciseID FROM ExerciseDataTable ORDER BY exerciseID DESC")
     int getHighestExerciseID();
 
-    @Query("SELECT workoutID FROM WorkoutDataTable ORDER BY workoutID DESC")
-    int getHighestWorkoutID();
+    /*@Query("SELECT workoutID FROM WorkoutDataTable ORDER BY workoutID DESC")
+    int getHighestWorkoutID();*/
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insertSetData(SetData setData);
@@ -23,6 +23,6 @@ public interface ExerciseDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     void insertExerciseData(ExerciseData exerciseData);
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insertWorkoutData(WorkoutData workoutData);
+    /*@Insert(onConflict = OnConflictStrategy.ABORT)
+    void insertWorkoutData(WorkoutData workoutData);*/
 }

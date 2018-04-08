@@ -1,22 +1,20 @@
 package com.example.database;
 
 import android.arch.persistence.room.*;
-import java.sql.Timestamp;
-import java.util.*;
 
 @Entity(tableName="dataPoint")
 
 public class DataPoint{
     //unique incrementing
-    @PrimaryKey
+    @ColumnInfo(name="val")
     private final int val;
 
     //this class is a wrapper for timestamp SQL recognizes
     @ColumnInfo(name="timestamp")
-    private final Timestamp dataTimeStamp;
+    private final long dataTimeStamp;
 
     //need a constructor for the table
-    public DataPoint(int val, Timestamp dataTimeStamp){
+    public DataPoint(int val, long dataTimeStamp){
         //set Timestamp to curr time
         this.val = val;
         this.dataTimeStamp = dataTimeStamp;

@@ -1,5 +1,7 @@
 package com.example.ridwankhan.navapp;
 
+import com.example.database.DataPoint;
+
 import java.util.ArrayList;
 
 /**
@@ -7,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface DataCommunication {
-    public void setCurrentSetArray(ArrayList<Integer> curr);
-    public ArrayList<Integer> getCurrentSetArray();
+    public void setCurrentSetArray(ArrayList<DataPoint> curr);
+    public ArrayList<DataPoint> getCurrentSetArray();
     public void clearCurrSetArray();    /// might not need this
 }
