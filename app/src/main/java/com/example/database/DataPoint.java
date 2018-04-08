@@ -4,10 +4,7 @@ import android.arch.persistence.room.*;
 import java.sql.Timestamp;
 import java.util.*;
 
-@Entity(
-    tableName="SetDataTable",
-    indices= arrayOf(Index(value = "exerciseID", name = "exercise_index"))
-)
+@Entity(tableName="dataPoint")
 
 public class DataPoint{
     //unique incrementing
