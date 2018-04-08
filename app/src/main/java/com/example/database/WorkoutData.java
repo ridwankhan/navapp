@@ -17,10 +17,11 @@ public class WorkoutData{
     @ColumnInfo(name="timestamp")
     private final Timestamp workoutTimeStamp;
 
-    public WorkoutData(int workoutID,String userName, Timestamp workoutTimeStamp ){
+    public WorkoutData(int workoutID,String userName){
         this.workoutID = workoutID;
         this.userName = userName;
-        this.workoutTimeStamp = workoutTimeStamp;
+        //this.workoutTimeStamp = workoutTimeStamp;
+        this.workoutTimeStamp = new Timestamp(System.currentTimeMillis());
         //set Timestamp to curr time
         //set id to be the increment of last ID in table
     }

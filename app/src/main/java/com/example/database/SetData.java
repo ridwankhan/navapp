@@ -6,7 +6,7 @@ import java.util.*;
 
 @Entity(
     tableName="SetDataTable",
-    indices= arrayOf(Index(value = "exerciseID", name = "exercise_index"))
+    indices= {@Index(value = "exerciseID", name = "exercise_index")}
 )
 
 public class SetData{
@@ -14,7 +14,7 @@ public class SetData{
     @PrimaryKey
     private final int setID;
 
-    //ID of the exercise this is a component of, e.g. dumbbell flys
+    //ID of the exercise this is a component of, e.g. dumbbell fly
     @ForeignKey(entity = ExerciseData.class,parentColumns="exerciseID", childColumns="exercise_id")
     private final int exerciseID;
 
@@ -36,11 +36,12 @@ public class SetData{
     private ArrayList<DataPoint> setDataValues;
 
     //need a constructor for the table
-    public SetData(int setID,int exerciseID, Timestamp setTimeStamp, int weight, int setNumber, ArrayList<Integer> setDataValues){
+    public SetData(int setID,int exerciseID, int weight, int setNumber, ArrayList<DataPoint> setDataValues){
         //set Timestamp to curr time
+        this.setDataValues = new ArrayList<>();
         this.setID = setID;
         this.exerciseID = exerciseID;
-        this.setTimeStamp = setTimeStamp;
+        this.setTimeStamp = new Timestamp(System.currentTimeMillis());
         this.weight = weight;
         this.setNumber = setNumber;
         this.setDataValues.addAll(setDataValues);
