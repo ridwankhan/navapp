@@ -2,6 +2,7 @@ package com.example.database;
 
 import android.arch.persistence.room.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity(
         tableName="ExerciseDataTable"//,
@@ -19,7 +20,8 @@ public class ExerciseData{
 
     //this class is a wrapper for timestamp SQL recognizes
     @ColumnInfo(name="time_stamp")
-    private final Timestamp exerciseTimeStamp;
+    @TypeConverters({TimestampConverters.class})
+    private Date exerciseTimeStamp;
 
     //1st set, 2nd set, etc.
     @ColumnInfo(name="muscle_group")
@@ -37,10 +39,26 @@ public class ExerciseData{
         return this.exerciseID;
     }
 
+    public String getExerciseName(){
+        return this.exerciseName;
+    }
+
+    public String getMuscleGroup(){
+        return this.muscleGroup;
+    }
+
+    public Date getExerciseTimeStamp(){
+        return this.exerciseTimeStamp;
+    }
+
+    public void setExerciseTimeStamp(Date exerciseTimeStamp){
+        this.exerciseTimeStamp = exerciseTimeStamp;
+    }
+
     public ExerciseData(int exerciseID,/*int workoutID,*/ String muscleGroup, String exerciseName ){
         this.exerciseID = exerciseID;
         //this.workoutID = workoutID;
-        this.exerciseTimeStamp = new Timestamp(System.currentTimeMillis());
+        this.exerciseTimeStamp = new Date();
         this.muscleGroup = muscleGroup;
         this.exerciseName = exerciseName;
 

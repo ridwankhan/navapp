@@ -6,20 +6,33 @@ import android.arch.persistence.room.*;
 
 public class DataPoint{
     //unique incrementing
+    @PrimaryKey(autoGenerate= true)
+    private int dataID;
+
     @ColumnInfo(name="val")
     private final int val;
 
     //this class is a wrapper for timestamp SQL recognizes
     @ColumnInfo(name="timestamp")
-    private final long dataTimeStamp;
+    @TypeConverters({TimestampConverters.class})
+    private long dataTimeStamp;
 
     public int getVal(){
         return this.val;
     }
 
-    public long getDataTimestamp(){
+    public long getDataTimeStamp(){
         return this.dataTimeStamp;
     }
+
+    public int getDataID(){
+        return this.dataID;
+    }
+
+    public void setDataID(int dataID){
+        this.dataID = dataID;
+    }
+
     //need a constructor for the table
     public DataPoint(int val, long dataTimeStamp){
         //set Timestamp to curr time

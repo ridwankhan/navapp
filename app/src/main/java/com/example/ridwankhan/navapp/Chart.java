@@ -93,7 +93,7 @@ public class Chart extends Fragment {
         for(int i = 0; i < currSetData.size(); i++){
             DataPoint currData = currSetData.get(i);
             int newVal = currData.getVal();
-            long newTime = currData.getDataTimestamp();
+            long newTime = currData.getDataTimeStamp();
 
             //should probably be using newTime instead of i here
             yValues.add(new Entry(i, newVal));

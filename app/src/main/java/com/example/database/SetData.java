@@ -20,7 +20,8 @@ public class SetData{
 
     //this class is a wrapper for timestamp SQL recognizes
     @ColumnInfo(name="timestamp")
-    private final Timestamp setTimeStamp;
+    @TypeConverters({TimestampConverters.class})
+    private Date setTimeStamp;
 
     //1st set, 2nd set, etc.
     @ColumnInfo(name="set_number")
@@ -32,9 +33,36 @@ public class SetData{
 
     //holds the data values
     @Embedded
-    @ColumnInfo(name="data_values")
+    @TypeConverters({DataPointConverters.class})
     private ArrayList<DataPoint> setDataValues;
 
+    public int getWeight(){
+        return this.weight;
+    }
+
+    public int getSetNumber(){
+        return this.setNumber;
+    }
+
+    public int getExerciseID(){
+        return this.exerciseID;
+    }
+
+    public int getSetID(){
+        return this.setID;
+    }
+
+    public ArrayList<DataPoint> getSetDataValues(){
+        return this.setDataValues;
+    }
+
+    public Date getSetTimeStamp(){
+        return this.setTimeStamp;
+    }
+
+    public void setSetTimeStamp(Date setTimeStamp){
+        this.setTimeStamp = setTimeStamp;
+    }
 
     //need a constructor for the table
     public SetData(int setID, int exerciseID, int weight, int setNumber, ArrayList<DataPoint> setDataValues){

@@ -6,6 +6,7 @@ import java.util.*;
 @Dao
 public interface ExerciseDao {
     @Query("SELECT * FROM SetDataTable WHERE setID = :setID ")
+    @TypeConverters({DataPointConverters.class,TimestampConverters.class})
     SetData[] getSetData(int setID);
 
     @Query("SELECT setID FROM SetDataTable ORDER BY setID DESC")
