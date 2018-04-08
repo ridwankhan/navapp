@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:layout_marginBottom="@dimen/card_margin"
+    android:layout_marginLeft="@dimen/card_margin"
+    android:layout_marginRight="@dimen/card_margin">
+    <LinearLayout
+        style="@style/Widget.CardContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/set_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:textSize="30sp"
+            android:fontFamily="sans-serif-condensed"
+            android:lineSpacingMultiplier="0.85"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:text="Set Information:" />
+        <TextView
+            android:id="@+id/set_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:text="Score:" />
+        <RatingBar
+            android:id="@+id/score_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:numStars="5"
+            android:rating="4.2"
+            android:stepSize="0.01"
+            android:isIndicator="true" />
+        <TextView
+            android:id="@+id/set_activation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Average Activation: "
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/activation_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="230" />
+        <TextView
+            android:id="@+id/prev_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Previous Set Activation: "
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/prev_set_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="185"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/prev_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Previous Workout Activation:"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/prev_workout_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="101"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
