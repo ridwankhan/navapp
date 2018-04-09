@@ -64,11 +64,7 @@ public class ledControl extends Fragment {
     ArrayList<DataPoint> sensorVals = new ArrayList<>();
     boolean isSet = false;
 
-    final AppDatabase db = Room.databaseBuilder(
-        getActivity().getApplicationContext(),
-        AppDatabase.class,
-        "perfectPumpDB"
-    ).build();
+    private AppDatabase db;
 
     int currExerciseID;
     //increments after each set, returns to 0 upon new exercise
@@ -229,6 +225,12 @@ public class ledControl extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).build();
+
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
@@ -243,6 +245,12 @@ public class ledControl extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
