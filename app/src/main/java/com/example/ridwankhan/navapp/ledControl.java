@@ -229,7 +229,7 @@ public class ledControl extends Fragment {
                 getActivity().getApplicationContext(),
                 AppDatabase.class,
                 "perfectPumpDB"
-        ).build();
+        ).allowMainThreadQueries().build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
@@ -250,7 +250,7 @@ public class ledControl extends Fragment {
                 getActivity().getApplicationContext(),
                 AppDatabase.class,
                 "perfectPumpDB"
-        ).build();
+        ).allowMainThreadQueries().build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
