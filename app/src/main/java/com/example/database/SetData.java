@@ -32,9 +32,7 @@ public class SetData{
     private int weight;
 
     //holds the data values
-    @Embedded
-    @TypeConverters({DataPointConverters.class})
-    private ArrayList<DataPoint> setDataValues;
+    private String setDataValues;
 
     public int getWeight(){
         return this.weight;
@@ -52,7 +50,7 @@ public class SetData{
         return this.setID;
     }
 
-    public ArrayList<DataPoint> getSetDataValues(){
+    public String getSetDataValues(){
         return this.setDataValues;
     }
 
@@ -65,15 +63,14 @@ public class SetData{
     }
 
     //need a constructor for the table
-    public SetData(int setID, int exerciseID, int weight, int setNumber, ArrayList<DataPoint> setDataValues){
+    public SetData(int setID, int exerciseID, int weight, int setNumber, String setDataValues){
         //set Timestamp to curr time
         this.setID = setID;
-        this.setDataValues = new ArrayList<>();
+        this.setDataValues = setDataValues;
         this.exerciseID = exerciseID;
         this.setTimeStamp = new Timestamp(System.currentTimeMillis());
         this.weight = weight;
         this.setNumber = setNumber;
-        this.setDataValues.addAll(setDataValues);
         //set id to be the increment of last ID in table
     }
 }

@@ -6,8 +6,11 @@ import java.util.*;
 @Dao
 public interface ExerciseDao {
     @Query("SELECT * FROM SetDataTable WHERE setID = :setID ")
-    @TypeConverters({DataPointConverters.class,TimestampConverters.class})
-    SetData[] getSetData(int setID);
+    @TypeConverters({TimestampConverters.class})
+    SetData getSetData(int setID);
+
+    @Query("SELECT setDataValues FROM SetDataTable WHERE setID = :setID ")
+    String getSetDataValuesStr(int setID);
 
     @Query("SELECT setID FROM SetDataTable ORDER BY setID DESC")
     int getHighestSetID();

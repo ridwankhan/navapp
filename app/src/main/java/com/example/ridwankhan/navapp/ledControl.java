@@ -329,10 +329,10 @@ public class ledControl extends Fragment {
         ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
 
         //create SetData object
-        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValues);
+        //SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValues);
 
         //insert it into db using DAO
-        db.exerciseDao().insertSetData(newSet);
+        //db.exerciseDao().insertSetData(newSet);
 
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(this.getId(), new Chart()).commit();

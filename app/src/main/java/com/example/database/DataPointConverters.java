@@ -14,7 +14,7 @@ public static ArrayList<DataPoint> fromString(String dataPointString) {
     String[] dataPointArray = dataPointString.split(strSeparator);
     ArrayList<DataPoint> dataPoints = new ArrayList<>();
     Gson gson = new Gson();
-    for (int i=0;i<dataPointArray.length-1;i++){
+    for (int i=0;i<dataPointArray.length;i++){
         dataPoints.add(gson.fromJson(dataPointArray[i] , DataPoint.class));
     }
     return dataPoints;
@@ -25,7 +25,7 @@ public static ArrayList<DataPoint> fromString(String dataPointString) {
 @TypeConverter
 public static String fromArrayList(ArrayList<DataPoint> list) {
     DataPoint[] dataPointArray = new DataPoint[list.size()];
-    for(int i = 0;i<=list.size()-1;i++){
+    for(int i = 0;i<list.size();i++){
         dataPointArray[i] = list.get(i);
     }
 

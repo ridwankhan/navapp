@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.database.AppDatabase;
 import com.example.database.DataPoint;
+import com.example.database.DataPointConverters;
 import com.example.database.ExerciseData;
 import com.example.database.SetData;
 
@@ -191,7 +192,7 @@ public class Home extends Fragment {
                 getActivity().getApplicationContext(),
                 AppDatabase.class,
                 "perfectPumpDB"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
@@ -212,7 +213,7 @@ public class Home extends Fragment {
                 getActivity().getApplicationContext(),
                 AppDatabase.class,
                 "perfectPumpDB"
-        ).allowMainThreadQueries().build();
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
@@ -279,12 +280,17 @@ public class Home extends Fragment {
         int setNumber = currSetNumber;
         ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
 
+        String setDataValueStr = DataPointConverters.fromArrayList(setDataValues);
+
         //create SetData object
-        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValues);
+        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValueStr);
 
         //insert it into db using DAO
         db.exerciseDao().insertSetData(newSet);
-        //System.out.println(db.exerciseDao().getSetData(setID-1).toString());
+        String setDataValuesStr = db.exerciseDao().getSetDataValuesStr(setID);
+//        System.out.println(setDataValuesStr);
+//        System.out.println("take 2");
+//        System.out.println(DataPointConverters.fromString(setDataValuesStr));
         //Log.d("DB TEST", db.exerciseDao().getSetData(setID).toString());
 
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
