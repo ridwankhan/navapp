@@ -1,86 +1,130 @@
 package com.example.ridwankhan.navapp;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import  android.app.Fragment;
 //import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.database.AppDatabase;
+import com.example.database.DataPoint;
+import com.example.database.ExerciseData;
+import com.example.database.SetData;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {link Home.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
+ * Use the {link Home#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class Home extends Fragment {
+    String address = null;
+    private ProgressDialog progress;
+    BluetoothAdapter btAdapter = null;
+    BluetoothSocket btSocket = null;
+    private boolean isBtConnected = false;
+    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // not quite sure how this string was generated
 
+    //added for receiving data:
+    Handler bluetoothIn;
+    final int handlerState = 0;                        //used to identify handler message
+    private StringBuilder recDataString = new StringBuilder();
+    private Home.ConnectedThread mConnectedThread;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    ArrayList<DataPoint> sensorVals = new ArrayList<>();
+    boolean isSet = false;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private AppDatabase db;
 
-    private OnFragmentInteractionListener mListener;
+    int currExerciseID;
+    //increments after each set, returns to 0 upon new exercise
+    int currSetNumber = 0;
+
+    DataCommunication mCallback;
 
     public Home() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    Button btn;
-    TextView txt;
+    Button start, save, btnDis;
+    TextView sensor;
     boolean firstClick = true;
     int randomNum;
 
+    @SuppressLint("HandlerLeak")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//receive the address of the bluetooth device
+        Intent newint = getActivity().getIntent();
+        address = newint.getStringExtra(MainActivity.EXTRA_ADDRESS);
 
-//        btn =  getView().findViewById(R.id.start_button);
-//
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                btn.setText("Stop");
-//            }
-//        });
+
+        bluetoothIn = new Handler() {
+            public void handleMessage(android.os.Message msg){
+                if (msg.what == handlerState){      //if message is what we want
+                    String readMessage = (String) msg.obj;
+                    recDataString.append(readMessage);      //keep appending to string until ~
+                    int endOfLineIndex = recDataString.indexOf("~");    //determine the end of line
+                    if (endOfLineIndex > 0) {               // make sure there is data before ~
+                        String dataInPrint = recDataString.substring(0, endOfLineIndex);    // extract string
+
+                        if (recDataString.charAt(0) == '#')                             //if it starts with # we know it is what we are looking for
+                        {
+                            int firstEndIndex = recDataString.indexOf("+");
+
+                            String sensor0 = recDataString.substring(1, firstEndIndex);             //get sensor value from string between indices 1 and the +
+                            String time = recDataString.substring(firstEndIndex+1, endOfLineIndex); // time stamp comes after
+                            sensor.setText(sensor0);    //update the textviews with sensor values
+
+                            //let's do a little type conversion so our data point can fit in our custom class
+                            int dataVal = Integer.parseInt(sensor0);
+                            long timeStamp = Long.parseLong(time);
+                            DataPoint newData = new DataPoint(dataVal, timeStamp);
+
+                            //push onto the arrayList
+                            sensorVals.add(newData);
+                            //sensorVals.add(Integer.parseInt(sensor0));      // add the integer to the array
+                        }
+                        recDataString.delete(0, recDataString.length());                    //clear all string data
+                        dataInPrint = "";
+                    }
+
+
+
+                }
+            }
+        };
+
+        new Home.ConnectBT().execute();
 
 
     }
@@ -90,25 +134,29 @@ public class Home extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        btn = (Button) view.findViewById(R.id.start_button);
-        txt = view.findViewById(R.id.number);
-        btn.setOnClickListener(new View.OnClickListener() {
+        start = (Button) view.findViewById(R.id.start);
+        btnDis = (Button)view.findViewById(R.id.disconnect);
+        save = (Button)view.findViewById(R.id.save);
+        sensor = (TextView)view.findViewById(R.id.sens);
+
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             if (firstClick) {
                 firstClick = false;
-                btn.setText("Stop");
-                btn.setBackgroundColor(Color.RED);
-
-                    Random rn = new Random();
-                    randomNum = rn.nextInt(1023 - 300 + 1) + 300;
-                    txt.setText(Integer.toString(randomNum));
+                start.setText("Stop");
+                start.setBackgroundColor(Color.RED);
+                startSet();
+//                    Random rn = new Random();
+//                    randomNum = rn.nextInt(1023 - 300 + 1) + 300;
+//                    sens.setText(Integer.toString(randomNum));
             }
             else {
-                btn.setText("Start");
-                btn.setBackgroundColor(Color.GREEN);
+                start.setText("Start");
+                start.setBackgroundColor(Color.GREEN);
                 firstClick = true;
+                stopSet();
 
             }
 
@@ -117,45 +165,252 @@ public class Home extends Fragment {
             }
         });
 
+        btnDis.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Disconnect(); //close connection
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveSet();
+            }
+        });
+
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).allowMainThreadQueries().build();
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) context;
+            System.out.println("called");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement DataCommunication");
         }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).allowMainThreadQueries().build();
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (DataCommunication) activity;
+            System.out.println("called");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement DataCommunication");
+        }
+    }
+
+    private void Disconnect() {
+        if (btSocket != null) { //If the btSocket is busy
+            try{
+                btSocket.close(); //close connection
+            }
+            catch (IOException e){
+                msg("Error");
+            }
+        }
+        getActivity().finish();
+    }
+
+    private void startSet(){
+        isSet = true;
+        sensorVals.clear();
+        currSetNumber++;
+        msg("Set Started");
+    }
+
+    private void stopSet(){
+        isSet = false;
+        mCallback.setCurrentSetArray(sensorVals);
+        msg("Set Stopped");
+        //System.out.println(Arrays.toString(sensorVals.toArray())); this line not gonna work with the custom class
+    }
+
+    private void startExercise(){
+        //assemble instantiation vals for ExerciseData, these should be connected to the form
+        String muscleGroup = "Biceps";
+        String exerciseName = "Curls";
+        currExerciseID = db.exerciseDao().getHighestExerciseID()+1; //this is also a dummy val right now
+
+        //create ExerciseData object
+        ExerciseData currExercise = new ExerciseData(currExerciseID, muscleGroup, exerciseName);
+
+        //insert it into db
+        db.exerciseDao().insertExerciseData(currExercise);
+    }
+
+    private void stopExercise(){
+        //clear out the vals
+        currSetNumber = 0;
+    }
+
+    private void saveSet(){
+        // add storage method here, maybe send to graphs here as well
+
+        //assemble instantiation vals
+        int exerciseID = currExerciseID;
+        int setID = db.exerciseDao().getHighestSetID() + 1;
+        int weight = 20;
+        int setNumber = currSetNumber;
+        ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
+
+        //create SetData object
+        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValues);
+
+        //insert it into db using DAO
+        db.exerciseDao().insertSetData(newSet);
+        //System.out.println(db.exerciseDao().getSetData(setID-1).toString());
+        //Log.d("DB TEST", db.exerciseDao().getSetData(setID).toString());
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(this.getId(), new Chart()).commit();
+        msg("Set Saved");
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onPause()
+    {
+        super.onPause();
+        try
+        {
+            //Don't leave Bluetooth sockets open when leaving activity
+            btSocket.close();
+        } catch (IOException e2) {
+            //insert code to deal with this
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void msg(String s)
+    {
+        Toast.makeText(getActivity().getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
+
+    private class ConnectBT extends AsyncTask<Void, Void, Void> //UI thread
+    {
+        private boolean ConnectSuccess = true; //if it's here, it's almost connected
+
+        @Override
+        protected void onPreExecute() {
+            progress = ProgressDialog.show(getActivity(), "Connecting...", "Please wait!!!"); // show a progress dialog
+        }
+
+        @Override
+        protected Void doInBackground(Void... devices) //while the progress dialog is shown, the connection is done in background
+        {
+            try {
+                if (btSocket == null || !isBtConnected) {
+                    btAdapter = BluetoothAdapter.getDefaultAdapter(); // get the mobile bluetooth device
+                    BluetoothDevice dispositivo = btAdapter.getRemoteDevice(address); // connects to the device's address and checks if it's available
+                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);// create a RFCOMM (SPP) connection
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                    btSocket.connect(); //start connection
+                }
+            }
+            catch(IOException e){
+                ConnectSuccess = false;//if the try failed, you can check the exception here
+            }
+
+            mConnectedThread = new Home.ConnectedThread(btSocket);
+            mConnectedThread.start();
+            mConnectedThread.write("x");
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){  //after the doInBackground, it checks if everything went fine
+            super.onPostExecute(result);
+
+            if (!ConnectSuccess){
+                msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
+                getActivity().finish();
+            }
+            else{
+                msg("Connected.");
+                isBtConnected = true;
+            }
+
+            progress.dismiss();
+        }
+    }
+
+    //create new class for connect thread
+    private class ConnectedThread extends Thread {
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        //creation of the connect thread
+        public ConnectedThread(BluetoothSocket socket) {
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                //Create I/O streams for connection
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            byte[] buffer = new byte[256];
+            int bytes;
+
+            // Keep looping to listen for received messages
+            while (true) {
+                // if in the middle of a set, read received messages and send them to handler
+                if (isSet){
+                    try {
+                        bytes = mmInStream.read(buffer);            //read bytes from input buffer
+                        String readMessage = new String(buffer, 0, bytes);
+                        // Send the obtained bytes to the UI Activity via handler
+                        bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                    } catch (IOException e) {
+                        break;
+                    }
+                }
+
+            }
+        }
+        //write method
+        public void write(String input) {
+            byte[] msgBuffer = input.getBytes();           //converts entered String into bytes
+            try {
+                mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
+            } catch (IOException e) {
+                //if you cannot write, close the application
+                Toast.makeText(getActivity().getBaseContext(), "Connection Failure", Toast.LENGTH_LONG).show();
+                getActivity().finish();
+
+            }
+        }
+    }
+
 }

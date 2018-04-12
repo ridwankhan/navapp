@@ -14,13 +14,14 @@ import java.util.ArrayList;
 public class MainActivityNav extends AppCompatActivity implements DataCommunication {
 
     private ArrayList<DataPoint> currSet;
+    android.app.FragmentManager manager = getFragmentManager();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            android.app.FragmentManager manager = getFragmentManager();
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Home home = new Home();
@@ -48,6 +49,10 @@ public class MainActivityNav extends AppCompatActivity implements DataCommunicat
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        if(savedInstanceState == null) {
+            Home home = new Home();
+            manager.beginTransaction().replace(R.id.contentLayout, home, home.getTag()).commit();
+        }
     }
 
     @Override
