@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,9 +76,12 @@ public class Home extends Fragment {
         // Required empty public constructor
     }
 
-    Button start, save, btnDis;
+    Button start, save, btnDis, setExercise;
     TextView sensor;
+    EditText editWeight, editSet, editMuscle, editWorkout;
+
     boolean firstClick = true;
+    boolean toggleExercise = true;
     int randomNum;
 
     @SuppressLint("HandlerLeak")
@@ -136,9 +140,18 @@ public class Home extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
         start = (Button) view.findViewById(R.id.start);
+        start.setVisibility(View.GONE);
         btnDis = (Button)view.findViewById(R.id.disconnect);
         save = (Button)view.findViewById(R.id.save);
+        save.setVisibility(View.GONE);
         sensor = (TextView)view.findViewById(R.id.sens);
+        editWeight = (EditText)view.findViewById(R.id.editWeight);
+        editWeight.setEnabled(false);
+        editSet = (EditText)view.findViewById(R.id.editSet);
+        editSet.setEnabled(false);
+        editMuscle = (EditText)view.findViewById(R.id.editMuscle);
+        editWorkout = (EditText)view.findViewById(R.id.editWorkout);
+        setExercise = (Button)view.findViewById(R.id.setExercise);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +173,38 @@ public class Home extends Fragment {
                 stopSet();
 
             }
+
+
+
+            }
+        });
+
+        setExercise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (toggleExercise) {
+                    toggleExercise = false;
+                    setExercise.setText("Back");
+                    setExercise.setBackgroundColor(Color.RED);
+                    editMuscle.setEnabled(false);
+                    editWorkout.setEnabled(false);
+                    editSet.setEnabled(true);
+                    editWeight.setEnabled(true);
+                    start.setVisibility(View.VISIBLE);
+                    save.setVisibility(View.VISIBLE);
+                }
+                else {
+                    setExercise.setText("Start Exercise");
+                    setExercise.setBackgroundColor(Color.GREEN);
+                    toggleExercise = true;
+                    editMuscle.setEnabled(true);
+                    editWorkout.setEnabled(true);
+                    editSet.setEnabled(false);
+                    editWeight.setEnabled(false);
+                    start.setVisibility(View.GONE);
+                    save.setVisibility(View.GONE);
+                }
 
 
 
