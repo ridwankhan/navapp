@@ -1,4 +1,5 @@
 package com.example.ridwankhan.navapp;
+import com.example.util.PeakDetector;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 
 import com.example.database.DataPoint;
@@ -22,11 +24,17 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Chart extends Fragment {
 
     LineChart lineChart;
     DataCommunication mCallback;
+    PeakDetector peakDetector;
+    LinkedList<Integer> peakIndices;
+    double[] peakDataSet = new double[mCallback.getCurrentSetArray().size()];
+    int sum = 0;
+
 
     public Chart() {
         // Required empty public constructor
@@ -90,6 +98,20 @@ public class Chart extends Fragment {
         ArrayList<Entry> yValues = new ArrayList<>();
         ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
 
+        //prepare data for peak detection algorithm
+        for(int i = 0; i < currSetData.size(); i++){
+            peakDataSet[i] = (double)currSetData.get(i).getVal();
+        }
+
+        peakIndices = peakDetector.findPeaks(peakDataSet, 3, 0, 0, false);
+
+        //average peak amplitude calculation
+        for (int i = 0;  i < peakIndices.size(); i++){
+            sum += peakDataSet[peakIndices.get(i)];
+        }
+        double averagePeakAmp = sum/(peakIndices.size());
+        Log.d("AVERAGE PEAK:", String.valueOf(averagePeakAmp));
+
         for(int i = 0; i < currSetData.size(); i++){
             DataPoint currData = currSetData.get(i);
             int newVal = currData.getVal();
@@ -98,17 +120,11 @@ public class Chart extends Fragment {
             //should probably be using newTime instead of i here
             yValues.add(new Entry(i, newVal));
         }
-//        yValues.add(new Entry(0, 60f));
-//        yValues.add(new Entry(1, 50f));
-//        yValues.add(new Entry(2, 70f));
-//        yValues.add(new Entry(3, 30f));
-//        yValues.add(new Entry(4, 50f));
-//        yValues.add(new Entry(5, 60f));
-//        yValues.add(new Entry(6, 65f));
 
         LineDataSet set1 = new LineDataSet(yValues, "Data Set 1");
         set1.setFillAlpha(110);
-        set1.setColors(ColorTemplate.COLORFUL_COLORS);
+        //set1.setColors(ColorTemplate.COLORFUL_COLORS);
+        set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
