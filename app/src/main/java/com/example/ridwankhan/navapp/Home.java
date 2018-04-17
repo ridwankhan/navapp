@@ -88,7 +88,7 @@ public class Home extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//receive the address of the bluetooth device
+        //receive the address of the bluetooth device
         Intent newint = getActivity().getIntent();
         address = newint.getStringExtra(MainActivity.EXTRA_ADDRESS);
 
@@ -438,7 +438,9 @@ public class Home extends Fragment {
             // Keep looping to listen for received messages
             while (true) {
                 // if in the middle of a set, read received messages and send them to handler
+
                 if (isSet){
+                    System.out.println("HERE 1234");
                     try {
                         bytes = mmInStream.read(buffer);            //read bytes from input buffer
                         String readMessage = new String(buffer, 0, bytes);
