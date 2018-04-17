@@ -30,11 +30,13 @@ import com.example.database.DataPoint;
 import com.example.database.DataPointConverters;
 import com.example.database.ExerciseData;
 import com.example.database.SetData;
+import com.example.util.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.UUID;
 
@@ -69,6 +71,11 @@ public class Home extends Fragment {
     int currExerciseID;
     //increments after each set, returns to 0 upon new exercise
     int currSetNumber = 0;
+
+    PeakDetector peakDetector;
+    LinkedList<Integer> peakIndices;
+    double[] peakDataSet;
+    int sum = 0;
 
     DataCommunication mCallback;
 
@@ -322,11 +329,26 @@ public class Home extends Fragment {
         int exerciseID = currExerciseID;
         int setID = db.exerciseDao().getHighestSetID() + 1;
         int weight = Integer.parseInt(editWeight.getText().toString());
-        double peakAverage = 2;  //change this to be an actual calculation
+        double peakAverage;  //change this to be an actual calculation
 
         //int reps = Integer.parseInt(editReps.getText().toString());
         int setNumber = currSetNumber;
         ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
+
+        peakDataSet = new double[setDataValues.size()];
+        //prepare data for peak detection algorithm
+        for(int i = 0; i < setDataValues.size(); i++){
+            peakDataSet[i] = (double)setDataValues.get(i).getVal();
+        }
+
+        peakIndices = peakDetector.findPeaks(peakDataSet, 3, 0, 0, false);
+
+        //average peak amplitude calculation
+        for (int i = 0;  i < peakIndices.size(); i++){
+            sum += peakDataSet[peakIndices.get(i)];
+        }
+        peakAverage = sum/(peakIndices.size());
+        Log.d("AVERAGE PEAK:", String.valueOf(peakAverage));
 
         String setDataValueStr = DataPointConverters.fromArrayList(setDataValues);
 

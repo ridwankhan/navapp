@@ -38,6 +38,59 @@
             android:rating="4.2"
             android:stepSize="0.01"
             android:isIndicator="true" />
+
+        <TextView
+            android:id="@+id/muscle_worked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Muscle Worked"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/muscle_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bicep"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/workout_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Workout Name"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/workout_name_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bicep Curl"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Weight"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/weight_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="25"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/set_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         <TextView
             android:id="@+id/set_activation"
             android:layout_width="match_parent"
@@ -51,31 +104,5 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="230" />
-        <TextView
-            android:id="@+id/prev_set"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Previous Set Activation: "
-            android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:id="@+id/prev_set_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="185"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        <TextView
-            android:id="@+id/prev_workout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Previous Workout Activation:"
-            android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-        <TextView
-            android:id="@+id/prev_workout_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="101"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </LinearLayout>
 </android.support.v7.widget.CardView>
