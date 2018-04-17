@@ -299,8 +299,8 @@ public class Home extends Fragment {
 
     private void startExercise(){
         //assemble instantiation vals for ExerciseData, these should be connected to the form
-        String muscleGroup = "Biceps";
-        String exerciseName = "Curls";
+        String muscleGroup = editMuscle.getText().toString();
+        String exerciseName = editWorkout.getText().toString();
         currExerciseID = db.exerciseDao().getHighestExerciseID()+1; //this is also a dummy val right now
 
         //create ExerciseData object
@@ -321,7 +321,8 @@ public class Home extends Fragment {
         //assemble instantiation vals
         int exerciseID = currExerciseID;
         int setID = db.exerciseDao().getHighestSetID() + 1;
-        int weight = 20;
+        int weight = Integer.parseInt(editWeight.getText().toString());
+        //int reps = Integer.parseInt(editReps.getText().toString());
         int setNumber = currSetNumber;
         ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
 
