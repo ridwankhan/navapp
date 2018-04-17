@@ -30,11 +30,6 @@ public class Chart extends Fragment {
 
     LineChart lineChart;
     DataCommunication mCallback;
-    PeakDetector peakDetector;
-    LinkedList<Integer> peakIndices;
-    double[] peakDataSet;
-    int sum = 0;
-
 
     public Chart() {
         // Required empty public constructor
@@ -97,20 +92,6 @@ public class Chart extends Fragment {
 
         ArrayList<Entry> yValues = new ArrayList<>();
         ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
-        peakDataSet = new double[currSetData.size()];
-        //prepare data for peak detection algorithm
-        for(int i = 0; i < currSetData.size(); i++){
-            peakDataSet[i] = (double)currSetData.get(i).getVal();
-        }
-
-        peakIndices = peakDetector.findPeaks(peakDataSet, 3, 0, 0, false);
-
-        //average peak amplitude calculation
-        for (int i = 0;  i < peakIndices.size(); i++){
-            sum += peakDataSet[peakIndices.get(i)];
-        }
-        double averagePeakAmp = sum/(peakIndices.size());
-        Log.d("AVERAGE PEAK:", String.valueOf(averagePeakAmp));
 
         for(int i = 0; i < currSetData.size(); i++){
             DataPoint currData = currSetData.get(i);
