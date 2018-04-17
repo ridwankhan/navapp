@@ -322,6 +322,8 @@ public class Home extends Fragment {
         int exerciseID = currExerciseID;
         int setID = db.exerciseDao().getHighestSetID() + 1;
         int weight = Integer.parseInt(editWeight.getText().toString());
+        double peakAverage = 2;  //change this to be an actual calculation
+
         //int reps = Integer.parseInt(editReps.getText().toString());
         int setNumber = currSetNumber;
         ArrayList<DataPoint> setDataValues = mCallback.getCurrentSetArray();
@@ -329,7 +331,7 @@ public class Home extends Fragment {
         String setDataValueStr = DataPointConverters.fromArrayList(setDataValues);
 
         //create SetData object
-        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValueStr);
+        SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValueStr, peakAverage);
 
         //insert it into db using DAO
         db.exerciseDao().insertSetData(newSet);
