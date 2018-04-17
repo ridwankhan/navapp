@@ -91,7 +91,7 @@ public class Chart extends Fragment {
         lineChart.setScaleEnabled(true);
 
         Description desc = new Description();
-        desc.setText("Test Line Chart");
+        desc.setText("Set Data");
         Log.d("DESC", desc.getText());
         lineChart.setDescription(desc);
 

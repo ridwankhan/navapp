@@ -32,10 +32,6 @@ public class MainActivityNav extends AppCompatActivity implements DataCommunicat
                     Chart chart = new Chart();
                     manager.beginTransaction().replace(R.id.contentLayout, chart, chart.getTag()).commit();
                     return true;
-                case R.id.navigation_notifications:
-                    ledControl led = new ledControl();
-                    manager.beginTransaction().replace(R.id.contentLayout, led, led.getTag()).commit();
-                    return true;
             }
             return false;
         }
