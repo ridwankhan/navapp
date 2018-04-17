@@ -115,7 +115,7 @@ public class Home extends Fragment {
 
                             String sensor0 = recDataString.substring(1, firstEndIndex);             //get sensor value from string between indices 1 and the +
                             String time = recDataString.substring(firstEndIndex+1, endOfLineIndex); // time stamp comes after
-                            sensor.setText(sensor0);    //update the textviews with sensor values
+                            sensor.setText(time);    //update the textviews with sensor values
 
                             //let's do a little type conversion so our data point can fit in our custom class
                             int dataVal = Integer.parseInt(sensor0);
@@ -464,12 +464,14 @@ public class Home extends Fragment {
                 // if in the middle of a set, read received messages and send them to handler
 
                 if (isSet){
-                    System.out.println("HERE 1234");
                     try {
-                        bytes = mmInStream.read(buffer);            //read bytes from input buffer
-                        String readMessage = new String(buffer, 0, bytes);
-                        // Send the obtained bytes to the UI Activity via handler
-                        bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                        if (mmInStream.available() > 0) {
+                            bytes = mmInStream.read(buffer);            //read bytes from input buffer
+                            String readMessage = new String(buffer, 0, bytes);
+                            System.out.println(readMessage);
+                            // Send the obtained bytes to the UI Activity via handler
+                            bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                        }
                     } catch (IOException e) {
                         break;
                     }
