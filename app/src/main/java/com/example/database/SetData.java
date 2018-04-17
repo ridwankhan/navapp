@@ -27,6 +27,9 @@ public class SetData{
     @ColumnInfo(name="set_number")
     private int setNumber;
 
+    @ColumnInfo(name="peak_avg")
+    private double peakAverage;
+
     //amount of weight lifted
     @ColumnInfo(name="weight")
     private int weight;
@@ -61,9 +64,10 @@ public class SetData{
     public void setSetTimeStamp(Date setTimeStamp){
         this.setTimeStamp = setTimeStamp;
     }
+    public double getPeakAverage(){ return this.peakAverage;}
 
     //need a constructor for the table
-    public SetData(int setID, int exerciseID, int weight, int setNumber, String setDataValues){
+    public SetData(int setID, int exerciseID, int weight, int setNumber, String setDataValues, double peakAverage){
         //set Timestamp to curr time
         this.setID = setID;
         this.setDataValues = setDataValues;
@@ -71,6 +75,7 @@ public class SetData{
         this.setTimeStamp = new Timestamp(System.currentTimeMillis());
         this.weight = weight;
         this.setNumber = setNumber;
+        this.peakAverage = peakAverage;
         //set id to be the increment of last ID in table
     }
 }
