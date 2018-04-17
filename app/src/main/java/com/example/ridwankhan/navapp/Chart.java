@@ -32,7 +32,7 @@ public class Chart extends Fragment {
     DataCommunication mCallback;
     PeakDetector peakDetector;
     LinkedList<Integer> peakIndices;
-    double[] peakDataSet = new double[mCallback.getCurrentSetArray().size()];
+    double[] peakDataSet;
     int sum = 0;
 
 
@@ -97,7 +97,7 @@ public class Chart extends Fragment {
 
         ArrayList<Entry> yValues = new ArrayList<>();
         ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
-
+        peakDataSet = new double[currSetData.size()];
         //prepare data for peak detection algorithm
         for(int i = 0; i < currSetData.size(); i++){
             peakDataSet[i] = (double)currSetData.get(i).getVal();

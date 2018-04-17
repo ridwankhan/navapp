@@ -29,8 +29,8 @@ public class MainActivityNav extends AppCompatActivity implements DataCommunicat
 
                     return true;
                 case R.id.navigation_dashboard:
-                    Chart chart = new Chart();
-                    manager.beginTransaction().replace(R.id.contentLayout, chart, chart.getTag()).commit();
+                    DashBoard dashBoard = new DashBoard();
+                    manager.beginTransaction().replace(R.id.contentLayout, dashBoard, dashBoard.getTag()).commit();
                     return true;
             }
             return false;
