@@ -1,36 +1,44 @@
 package com.example.ridwankhan.navapp;
 
+import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 ///import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Date;
 
+import com.example.database.AppDatabase;
+import com.example.database.ExerciseData;
+import com.example.database.SetData;
+import com.example.util.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DashBoard.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DashBoard#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DashBoard extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Context mContext;
+    View view;
+    ListView lvList;
+    ArrayList<ListData> prevData = new ArrayList<ListData>();
+    ListAdapter listAdapter;
+    String Date = "";
+    Double Score = 0.0;
+    String Muscle = "";
+    String Exercise = "";
+    Integer Set = 0;
+    Integer Weight = 0;
+    Double Activation = 0.0;
 
     private OnFragmentInteractionListener mListener;
 
-    public DashBoard() {
+    public DashBoard(){
         // Required empty public constructor
     }
 
@@ -46,26 +54,67 @@ public class DashBoard extends Fragment {
     public static DashBoard newInstance(String param1, String param2) {
         DashBoard fragment = new DashBoard();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dash_board, container, false);
+        view =  inflater.inflate(R.layout.fragment_dash_board, container, false);
+        lvList = (ListView) view.findViewById(R.id.lvList);
+        lvList.setAdapter(listAdapter);
+
+        //get data from database on previous workouts here instead
+        SetData setData = new SetData(1,1,20,2,"1,2,3,4,5",3.5);
+        ExerciseData exerciseData = new ExerciseData(setData.getExerciseID(), "Bicep", "Back and Biceps");
+
+        //for each array of set data ...
+
+        Date = setData.getSetTimeStamp().toString();
+        Score = 2.5;
+        Muscle = exerciseData.getMuscleGroup();
+        Exercise = exerciseData.getExerciseName();
+        Set = setData.getSetNumber();
+        Weight = setData.getWeight();
+        Activation = setData.getPeakAverage();
+
+        //check the data
+        if (Date.length() == 0) {
+            Date = "No Date";
+        }
+        if (Muscle.length() == 0) {
+            Muscle = "No Muscle";
+        }
+        if (Exercise.length() == 0) {
+            Exercise = "No Exercise";
+        }
+
+        ListData mLog = new ListData();
+        mLog.setDate(Date);
+        mLog.setScore(Score);
+        mLog.setMuscle(Muscle);
+        mLog.setExercise(Exercise);
+        mLog.setSet(Set);
+        mLog.setWeight(Weight);
+        mLog.setActivation(Activation);
+        prevData.add(mLog);
+        listAdapter.notifyDataSetChanged();
+
+        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListData mLog = listAdapter.getItem(position);
+                Toast.makeText(getActivity(), "Date: " + mLog.getDate() + "  Score: " + mLog.getScore() + "  Muscle: " + mLog.getMuscle() + "  Exercise: " + mLog.getExercise() + "  Set: " + mLog.getSet() + "  Weight: " + mLog.getWeight() + "  Activation: " + mLog.getActivation(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -75,15 +124,17 @@ public class DashBoard extends Fragment {
         }
     }
 
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+
+        listAdapter = new ListAdapter(getActivity(), prevData);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        listAdapter = new ListAdapter(getActivity(), prevData);
     }
 
     @Override

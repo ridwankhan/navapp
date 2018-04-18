@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="10dp"
             android:textSize="30sp"
             android:fontFamily="sans-serif-condensed"
             android:lineSpacingMultiplier="0.85"
@@ -23,44 +22,54 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:text="Set Information:" />
         <TextView
+            android:id="@+id/set_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:text="Date:" />
+        <TextView
+            android:id="@+id/date_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="04/18/2018"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
             android:id="@+id/set_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:text="Score:" />
-        <RatingBar
+        <TextView
             android:id="@+id/score_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?android:attr/ratingBarStyleIndicator"
-            android:numStars="5"
-            android:rating="4.2"
-            android:stepSize="0.01"
-            android:isIndicator="true" />
+            android:text="4.5"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
-            android:id="@+id/muscle_worked"
+            android:id="@+id/muscle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Muscle Worked"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
-            android:id="@+id/muscle_name"
+            android:id="@+id/muscle_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bicep"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         <TextView
-            android:id="@+id/workout_name"
+            android:id="@+id/exercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Workout Name"
+            android:text="Exercise"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
-            android:id="@+id/workout_name_detail"
+            android:id="@+id/exercise_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bicep Curl"

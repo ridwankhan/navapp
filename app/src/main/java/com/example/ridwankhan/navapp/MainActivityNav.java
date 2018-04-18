@@ -26,7 +26,6 @@ public class MainActivityNav extends AppCompatActivity implements DataCommunicat
                 case R.id.navigation_home:
                     Home home = new Home();
                     manager.beginTransaction().replace(R.id.contentLayout, home, home.getTag()).commit();
-
                     return true;
                 case R.id.navigation_dashboard:
                     DashBoard dashBoard = new DashBoard();

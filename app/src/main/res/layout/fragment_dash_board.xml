@@ -7,6 +7,16 @@
     tools:context="com.example.ridwankhan.navapp.DashBoard">
 
     <!-- TODO: Update blank fragment layout -->
-
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:layout_weight="1"
+            android:id="@+id/lvList" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
