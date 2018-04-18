@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="@dimen/card_margin"
+    android:layout_marginLeft="@dimen/card_margin"
+    android:layout_marginRight="@dimen/card_margin"
     tools:context="com.example.ridwankhan.navapp.Chart">
 
     <ScrollView
@@ -13,16 +17,56 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:padding="3dp"
-                android:layout_marginBottom="10dp"
-                android:textSize="21sp"
-                android:text="Set Data"
+                android:id="@+id/chart_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="Raw Set Data:" />
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/Line_Chart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/avg_activation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="Average Activation:" />
+            <TextView
+                android:id="@+id/avg_activation_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/previous_set_activation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="Previous Set Activation:" />
+            <TextView
+                android:id="@+id/previous_set_activation_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/overall_exercise_activation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="Overall Activation:" />
+            <TextView
+                android:id="@+id/overall_exercise_activation_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_marginBottom="16dp"/>
 
         </LinearLayout>
     </ScrollView>

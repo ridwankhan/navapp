@@ -72,7 +72,7 @@ public class DashBoard extends Fragment {
 
         //get data from database on previous workouts here instead
         SetData setData = new SetData(1,1,20,2,"1,2,3,4,5",3.5);
-        ExerciseData exerciseData = new ExerciseData(setData.getExerciseID(), "Bicep", "Back and Biceps");
+        ExerciseData exerciseData = new ExerciseData(setData.getExerciseID(), "Bicep", "Bicep Curl");
 
         //for each array of set data ...
 

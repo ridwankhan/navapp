@@ -1,5 +1,5 @@
 package com.example.ridwankhan.navapp;
-import com.example.util.PeakDetector;
+//import com.example.util.PeakDetector;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.database.DataPoint;
 import com.github.mikephil.charting.charts.LineChart;
@@ -30,6 +31,13 @@ public class Chart extends Fragment {
 
     LineChart lineChart;
     DataCommunication mCallback;
+    //PeakDetector peakDetector;
+    //LinkedList<Integer> peakIndices;
+    double[] peakDataSet;
+    double peakAverage = 0.0;
+    double prevActivation = 0.0;
+    double overallActivation = 0.0;
+    //int sum = 0;
 
     public Chart() {
         // Required empty public constructor
@@ -48,7 +56,15 @@ public class Chart extends Fragment {
         View v = inflater.inflate(R.layout.fragment_chart, container, false);
         //call the widgets
         lineChart = (LineChart)v.findViewById(R.id.Line_Chart);
-        drawLineChart();
+        calculateData();
+        TextView avgActivation = (TextView) v.findViewById(R.id.avg_activation_detail);
+        TextView prevAct = (TextView) v.findViewById(R.id.previous_set_activation_detail);
+        TextView ovAct = (TextView) v.findViewById(R.id.overall_exercise_activation_detail);
+
+        avgActivation.setText(String.valueOf(peakAverage));
+        prevAct.setText(String.valueOf(prevActivation));
+        ovAct.setText(String.valueOf(overallActivation));
+
         return v;
     }
 
@@ -81,7 +97,29 @@ public class Chart extends Fragment {
         }
     }
 
-    private void drawLineChart(){
+    private void calculateData(){
+        //get data for this set
+        ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
+
+        //calculations and data
+        //for the most recent set id for this user, select the average peak amplitude,
+        //previous set's average amplitude, and calculate the new overall average and set them equal
+        //to peakAverage, prevActivation, overallActivation
+                //        peakDataSet = new double[currSetData.size()];
+                //        //prepare data for peak detection algorithm
+                //        for(int i = 0; i < currSetData.size(); i++){
+                //            peakDataSet[i] = (double)currSetData.get(i).getVal();
+                //        }
+                //
+                //        peakIndices = peakDetector.findPeaks(peakDataSet, 3, 0, 0, false);
+                //
+                //        //average peak amplitude calculation
+                //        for (int i = 0;  i < peakIndices.size(); i++){
+                //            sum += peakDataSet[peakIndices.get(i)];
+                //        }
+                //        peakAverage = sum/(peakIndices.size());
+
+        //chart data display
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
 
@@ -91,7 +129,6 @@ public class Chart extends Fragment {
         lineChart.setDescription(desc);
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
 
         for(int i = 0; i < currSetData.size(); i++){
             DataPoint currData = currSetData.get(i);
