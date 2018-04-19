@@ -37,9 +37,9 @@ void loop() {
       ledOn();
     }
   }
-  //delay by .1s. Meaning we will be sent values every 2s approx
+  //delay by .05s. Meaning we will be sent values every 2s approx
   //also means that it can take up to 2 seconds to change LED state
-  delay(150);
+  delay(50);
 //  if (Serial.available()>0){
 //    Serial.println("There is info available");
 //    string = "";

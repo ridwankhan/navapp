@@ -32,8 +32,10 @@ import com.example.database.ExerciseData;
 import com.example.database.SetData;
 import com.example.util.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -115,7 +117,7 @@ public class Home extends Fragment {
 
                             String sensor0 = recDataString.substring(1, firstEndIndex);             //get sensor value from string between indices 1 and the +
                             String time = recDataString.substring(firstEndIndex+1, endOfLineIndex); // time stamp comes after
-                            sensor.setText(time);    //update the textviews with sensor values
+                            sensor.setText(sensor0);    //update the textviews with sensor values
 
                             //let's do a little type conversion so our data point can fit in our custom class
                             int dataVal = Integer.parseInt(sensor0);
@@ -456,8 +458,8 @@ public class Home extends Fragment {
         }
 
         public void run() {
-            byte[] buffer = new byte[256];
-            int bytes;
+            //byte[] buffer = new byte[256];
+            //int bytes;
 
             // Keep looping to listen for received messages
             while (true) {
@@ -466,11 +468,13 @@ public class Home extends Fragment {
                 if (isSet){
                     try {
                         if (mmInStream.available() > 0) {
-                            bytes = mmInStream.read(buffer);            //read bytes from input buffer
-                            String readMessage = new String(buffer, 0, bytes);
-                            System.out.println(readMessage);
+                            //bytes = mmInStream.read(buffer);            //read bytes from input buffer
+                            //String readMessage = new String(buffer, 0, bytes);
+                            String readMessage = readUntilChar(mmInStream, '~');
+                            //System.out.println(readMessage);
                             // Send the obtained bytes to the UI Activity via handler
-                            bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                            //bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                            bluetoothIn.obtainMessage(handlerState, readMessage).sendToTarget();
                         }
                     } catch (IOException e) {
                         break;
@@ -490,6 +494,30 @@ public class Home extends Fragment {
                 getActivity().finish();
 
             }
+        }
+
+        public String readUntilChar(InputStream stream, char target) {
+            StringBuilder sb = new StringBuilder();
+
+            try {
+                BufferedReader buffer=new BufferedReader(new InputStreamReader(stream));
+
+                int r;
+                while ((r = buffer.read()) != -1) {
+                    char c = (char) r;
+
+                    sb.append(c);
+
+                    if (c == target)
+                        break;
+                }
+
+                System.out.println(sb.toString());
+            } catch(IOException e) {
+                // Error handling
+            }
+
+            return sb.toString();
         }
     }
 
