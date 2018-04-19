@@ -20,8 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,8 +89,15 @@ public class Home extends Fragment {
 
     Button start, save, btnDis, setExercise;
     TextView sensor;
-    EditText editWeight, editSet, editMuscle, editWorkout;
-
+    EditText editWeight, editSet;
+    Spinner editMuscle, editWorkout;
+    //create a list of items for the spinner.
+    String[] muscles = new String[]{"Bicep", "Tricep", "Chest"};
+    String[] workouts = new String[]{"Bicep Curl", "Hammer Curl", "Rope Pull Down", "Bench Press"};
+    //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+    //There are multiple variations of this, but this is the basic variant.
+    ArrayAdapter<String> musclesAdapter;
+    ArrayAdapter<String> workoutsAdapter;
     boolean firstClick = true;
     boolean toggleExercise = true;
     int randomNum;
@@ -158,9 +167,13 @@ public class Home extends Fragment {
         editWeight.setEnabled(false);
         editSet = (EditText)view.findViewById(R.id.editSet);
         editSet.setEnabled(false);
-        editMuscle = (EditText)view.findViewById(R.id.editMuscle);
-        editWorkout = (EditText)view.findViewById(R.id.editWorkout);
+        editMuscle = (Spinner)view.findViewById(R.id.editMuscle);
+        editWorkout = (Spinner)view.findViewById(R.id.editWorkout);
         setExercise = (Button)view.findViewById(R.id.setExercise);
+
+        //set the spinners adapter to the previously created one.
+        editMuscle.setAdapter(musclesAdapter);
+        editWorkout.setAdapter(workoutsAdapter);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,6 +270,13 @@ public class Home extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement DataCommunication");
         }
+
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        musclesAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, muscles);
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        workoutsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, workouts);
     }
 
     @Override
@@ -278,6 +298,13 @@ public class Home extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement DataCommunication");
         }
+
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        musclesAdapter = new ArrayAdapter<>(activity.getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, muscles);
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        workoutsAdapter = new ArrayAdapter<>(activity.getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, workouts);
     }
 
     private void Disconnect() {
@@ -308,8 +335,8 @@ public class Home extends Fragment {
 
     private void startExercise(){
         //assemble instantiation vals for ExerciseData, these should be connected to the form
-        String muscleGroup = editMuscle.getText().toString();
-        String exerciseName = editWorkout.getText().toString();
+        String muscleGroup = editMuscle.getSelectedItem().toString();
+        String exerciseName = editWorkout.getSelectedItem().toString();
         currExerciseID = db.exerciseDao().getHighestExerciseID()+1; //this is also a dummy val right now
 
         //create ExerciseData object
