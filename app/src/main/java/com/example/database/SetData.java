@@ -64,6 +64,7 @@ public class SetData{
     public void setSetTimeStamp(Date setTimeStamp){
         this.setTimeStamp = setTimeStamp;
     }
+
     public double getPeakAverage(){ return this.peakAverage;}
 
     //need a constructor for the table

@@ -2,6 +2,7 @@ package com.example.ridwankhan.navapp;
 //import com.example.util.PeakDetector;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,7 +16,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.database.DataPoint;
+import com.example.database.*;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
@@ -31,9 +32,7 @@ public class Chart extends Fragment {
 
     LineChart lineChart;
     DataCommunication mCallback;
-    //PeakDetector peakDetector;
-    //LinkedList<Integer> peakIndices;
-    double[] peakDataSet;
+    private AppDatabase db;
     double peakAverage = 0.0;
     double prevActivation = 0.0;
     double overallActivation = 0.0;
@@ -72,6 +71,12 @@ public class Chart extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
@@ -85,6 +90,12 @@ public class Chart extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
@@ -102,22 +113,16 @@ public class Chart extends Fragment {
         ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
 
         //calculations and data
-        //for the most recent set id for this user, select the average peak amplitude,
-        //previous set's average amplitude, and calculate the new overall average and set them equal
-        //to peakAverage, prevActivation, overallActivation
-                //        peakDataSet = new double[currSetData.size()];
-                //        //prepare data for peak detection algorithm
-                //        for(int i = 0; i < currSetData.size(); i++){
-                //            peakDataSet[i] = (double)currSetData.get(i).getVal();
-                //        }
-                //
-                //        peakIndices = peakDetector.findPeaks(peakDataSet, 3, 0, 0, false);
-                //
-                //        //average peak amplitude calculation
-                //        for (int i = 0;  i < peakIndices.size(); i++){
-                //            sum += peakDataSet[peakIndices.get(i)];
-                //        }
-                //        peakAverage = sum/(peakIndices.size());
+
+        int setId = db.exerciseDao().getHighestSetID();
+        SetData setDat = db.exerciseDao().getSetData(setId);
+        peakAverage = setDat.getPeakAverage();
+
+        if(setId - 1 > 0){
+            SetData prevSetData = db.exerciseDao().getSetData(setId -1);
+            prevActivation = prevSetData.getPeakAverage();
+        }
+        overallActivation = db.exerciseDao().getOverallActivation(setDat.getExerciseID());
 
         //chart data display
         lineChart.setDragEnabled(true);

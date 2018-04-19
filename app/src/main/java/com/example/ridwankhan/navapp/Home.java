@@ -215,6 +215,7 @@ public class Home extends Fragment {
                     editWeight.setEnabled(true);
                     start.setVisibility(View.VISIBLE);
                     save.setVisibility(View.VISIBLE);
+                    startExercise();
                 }
                 else {
                     setExercise.setText("Start Exercise");
@@ -226,6 +227,7 @@ public class Home extends Fragment {
                     editWeight.setEnabled(false);
                     start.setVisibility(View.GONE);
                     save.setVisibility(View.GONE);
+                    stopExercise();
                 }
 
 
@@ -338,7 +340,7 @@ public class Home extends Fragment {
         String muscleGroup = editMuscle.getSelectedItem().toString();
         String exerciseName = editWorkout.getSelectedItem().toString();
         currExerciseID = db.exerciseDao().getHighestExerciseID()+1; //this is also a dummy val right now
-
+        Log.d("start exercise data: ",muscleGroup + " " + exerciseName + String.valueOf(currExerciseID));
         //create ExerciseData object
         ExerciseData currExercise = new ExerciseData(currExerciseID, muscleGroup, exerciseName);
 

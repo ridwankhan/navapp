@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 ///import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class DashBoard extends Fragment {
     Integer Set = 0;
     Integer Weight = 0;
     Double Activation = 0.0;
+    private AppDatabase db;
 
     private OnFragmentInteractionListener mListener;
 
@@ -71,40 +73,44 @@ public class DashBoard extends Fragment {
         lvList.setAdapter(listAdapter);
 
         //get data from database on previous workouts here instead
-        SetData setData = new SetData(1,1,20,2,"1,2,3,4,5",3.5);
-        ExerciseData exerciseData = new ExerciseData(setData.getExerciseID(), "Bicep", "Bicep Curl");
+        SetData[] setData = db.exerciseDao().getSets();
 
-        //for each array of set data ...
+        //for each array element of set data ...
 
-        Date = setData.getSetTimeStamp().toString();
-        Score = 2.5;
-        Muscle = exerciseData.getMuscleGroup();
-        Exercise = exerciseData.getExerciseName();
-        Set = setData.getSetNumber();
-        Weight = setData.getWeight();
-        Activation = setData.getPeakAverage();
+        for(SetData set : setData){
+            Log.d("EXERCISE ID",String.valueOf(set.getExerciseID()));
+            //get exercise data
+            ExerciseData exerciseData = db.exerciseDao().getExerciseData(set.getExerciseID());
+            Date = set.getSetTimeStamp().toString();
+            Score = 0.0;
+            Muscle = exerciseData.getMuscleGroup();
+            Exercise = exerciseData.getExerciseName();
+            Set = set.getSetNumber();
+            Weight = set.getWeight();
+            Activation = set.getPeakAverage();
 
-        //check the data
-        if (Date.length() == 0) {
-            Date = "No Date";
+            //check the data
+            if (Date.length() == 0) {
+                Date = "No Date";
+            }
+            if (Muscle.length() == 0) {
+                Muscle = "No Muscle";
+            }
+            if (Exercise.length() == 0) {
+                Exercise = "No Exercise";
+            }
+
+            ListData mLog = new ListData();
+            mLog.setDate(Date);
+            mLog.setScore(Score);
+            mLog.setMuscle(Muscle);
+            mLog.setExercise(Exercise);
+            mLog.setSet(Set);
+            mLog.setWeight(Weight);
+            mLog.setActivation(Activation);
+            prevData.add(mLog);
+            listAdapter.notifyDataSetChanged();
         }
-        if (Muscle.length() == 0) {
-            Muscle = "No Muscle";
-        }
-        if (Exercise.length() == 0) {
-            Exercise = "No Exercise";
-        }
-
-        ListData mLog = new ListData();
-        mLog.setDate(Date);
-        mLog.setScore(Score);
-        mLog.setMuscle(Muscle);
-        mLog.setExercise(Exercise);
-        mLog.setSet(Set);
-        mLog.setWeight(Weight);
-        mLog.setActivation(Activation);
-        prevData.add(mLog);
-        listAdapter.notifyDataSetChanged();
 
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,15 +132,23 @@ public class DashBoard extends Fragment {
 
     public void onAttach(Context context) {
         super.onAttach(context);
-
         listAdapter = new ListAdapter(getActivity(), prevData);
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         listAdapter = new ListAdapter(getActivity(), prevData);
+        db = Room.databaseBuilder(
+                getActivity().getApplicationContext(),
+                AppDatabase.class,
+                "perfectPumpDB"
+        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
     }
 
     @Override
