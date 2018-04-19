@@ -13,7 +13,7 @@ public interface ExerciseDao {
     @TypeConverters({TimestampConverters.class})
     ExerciseData getExerciseData(int exerciseId);
 
-    @Query("SELECT * FROM SetDataTable")
+    @Query("SELECT * FROM SetDataTable ORDER BY timestamp DESC")
     @TypeConverters({TimestampConverters.class})
     SetData[] getSets();
 
@@ -26,8 +26,16 @@ public interface ExerciseDao {
     @Query("SELECT exerciseID FROM ExerciseDataTable ORDER BY exerciseID DESC")
     int getHighestExerciseID();
 
-    @Query("SELECT AVG(peak_avg) FROM SetDataTable WHERE exerciseID = :exerciseId")
-    int getOverallActivation(int exerciseId);
+    @Query("SELECT AVG(t1.peak_avg) " +
+            "FROM (SELECT * FROM ExerciseDataTable e1 INNER JOIN SetDataTable s1 ON s1.exerciseID = e1.exerciseID) as t1" +
+            " WHERE t1.name = :exerciseName")
+    double getOverallActivation(String exerciseName);
+
+    @Query("DELETE FROM SetDataTable")
+    void clearSetDb();
+
+    @Query("DELETE FROM ExerciseDataTable")
+    void clearExerciseDb();
 
     /*@Query("SELECT workoutID FROM WorkoutDataTable ORDER BY workoutID DESC")
     int getHighestWorkoutID();*/

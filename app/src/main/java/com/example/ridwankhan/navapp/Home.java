@@ -336,6 +336,8 @@ public class Home extends Fragment {
     }
 
     private void startExercise(){
+        //db.exerciseDao().clearSetDb();
+        //db.exerciseDao().clearExerciseDb();
         //assemble instantiation vals for ExerciseData, these should be connected to the form
         String muscleGroup = editMuscle.getSelectedItem().toString();
         String exerciseName = editWorkout.getSelectedItem().toString();

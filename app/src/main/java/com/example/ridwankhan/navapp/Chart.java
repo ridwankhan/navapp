@@ -122,7 +122,8 @@ public class Chart extends Fragment {
             SetData prevSetData = db.exerciseDao().getSetData(setId -1);
             prevActivation = prevSetData.getPeakAverage();
         }
-        overallActivation = db.exerciseDao().getOverallActivation(setDat.getExerciseID());
+        ExerciseData exData = db.exerciseDao().getExerciseData(setDat.getExerciseID());
+        overallActivation = db.exerciseDao().getOverallActivation(exData.getExerciseName());
 
         //chart data display
         lineChart.setDragEnabled(true);

@@ -30,7 +30,6 @@ public class DashBoard extends Fragment {
     ArrayList<ListData> prevData = new ArrayList<ListData>();
     ListAdapter listAdapter;
     String Date = "";
-    Double Score = 0.0;
     String Muscle = "";
     String Exercise = "";
     Integer Set = 0;
@@ -77,17 +76,15 @@ public class DashBoard extends Fragment {
 
         //for each array element of set data ...
 
-        for(SetData set : setData){
-            Log.d("EXERCISE ID",String.valueOf(set.getExerciseID()));
+        for(int i = 0; i < setData.length; i ++){
             //get exercise data
-            ExerciseData exerciseData = db.exerciseDao().getExerciseData(set.getExerciseID());
-            Date = set.getSetTimeStamp().toString();
-            Score = 0.0;
+            ExerciseData exerciseData = db.exerciseDao().getExerciseData(setData[i].getExerciseID());
+            Date = setData[i].getSetTimeStamp().toString();
             Muscle = exerciseData.getMuscleGroup();
             Exercise = exerciseData.getExerciseName();
-            Set = set.getSetNumber();
-            Weight = set.getWeight();
-            Activation = set.getPeakAverage();
+            Set = setData[i].getSetNumber();
+            Weight = setData[i].getWeight();
+            Activation = setData[i].getPeakAverage();
 
             //check the data
             if (Date.length() == 0) {
@@ -102,7 +99,6 @@ public class DashBoard extends Fragment {
 
             ListData mLog = new ListData();
             mLog.setDate(Date);
-            mLog.setScore(Score);
             mLog.setMuscle(Muscle);
             mLog.setExercise(Exercise);
             mLog.setSet(Set);
