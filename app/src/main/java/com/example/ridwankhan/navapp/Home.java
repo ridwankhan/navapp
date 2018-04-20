@@ -384,20 +384,18 @@ public class Home extends Fragment {
         Log.d("AVERAGE PEAK:", String.valueOf(peakAverage));
 
         String setDataValueStr = DataPointConverters.fromArrayList(setDataValues);
+        Log.d("set data values: ", setDataValueStr);
 
         //create SetData object
         SetData newSet = new SetData(setID, exerciseID,weight,setNumber,setDataValueStr, peakAverage);
 
         //insert it into db using DAO
         db.exerciseDao().insertSetData(newSet);
-        String setDataValuesStr = db.exerciseDao().getSetDataValuesStr(setID);
-//        System.out.println(setDataValuesStr);
-//        System.out.println("take 2");
-//        System.out.println(DataPointConverters.fromString(setDataValuesStr));
-        //Log.d("DB TEST", db.exerciseDao().getSetData(setID).toString());
+        //String setDataValuesStr = db.exerciseDao().getSetDataValuesStr(setID);
 
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(this.getId(), new Chart()).commit();
+        ft.replace(this.getId(), Chart.newInstance(setID)).commit();
+        //ft.replace(this.getId(), new Chart()).commit();
         msg("Set Saved");
     }
 

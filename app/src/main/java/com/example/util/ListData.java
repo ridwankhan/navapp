@@ -6,25 +6,18 @@ package com.example.util;
 
 public class ListData {
     String Date;
-    Double Score;
     String Muscle;
     String Exercise;
     Integer Set;
     Integer Weight;
     Double Activation;
+    Integer SetId;
 
     public String getDate() {
         return Date;
     }
     public void setDate(String date) {
         this.Date = date;
-    }
-
-    public Double getScore() {
-        return Score;
-    }
-    public void setScore(Double score) {
-        this.Score = score;
     }
 
     public String getMuscle() {
@@ -60,5 +53,12 @@ public class ListData {
     }
     public void setActivation(Double activation) {
         this.Activation = activation;
+    }
+
+    public Integer getSetId() {
+        return SetId;
+    }
+    public void setSetId(Integer setId) {
+        this.SetId = setId;
     }
 }

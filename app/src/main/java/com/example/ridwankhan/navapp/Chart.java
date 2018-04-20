@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -36,12 +37,28 @@ public class Chart extends Fragment {
     double peakAverage = 0.0;
     double prevActivation = 0.0;
     double overallActivation = 0.0;
+    private int setId;
     //int sum = 0;
 
     public Chart() {
         // Required empty public constructor
     }
 
+    public static Chart newInstance(int setId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("setId", setId);
+
+        Chart chart = new Chart();
+        chart.setArguments(bundle);
+
+        return chart;
+    }
+
+    private void readBundle(Bundle bundle) {
+        if (bundle != null) {
+            setId = bundle.getInt("setId");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,8 +71,9 @@ public class Chart extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chart, container, false);
         //call the widgets
+        readBundle(getArguments());
         lineChart = (LineChart)v.findViewById(R.id.Line_Chart);
-        calculateData();
+        calculateData(setId);
         TextView avgActivation = (TextView) v.findViewById(R.id.avg_activation_detail);
         TextView prevAct = (TextView) v.findViewById(R.id.previous_set_activation_detail);
         TextView ovAct = (TextView) v.findViewById(R.id.overall_exercise_activation_detail);
@@ -108,13 +126,15 @@ public class Chart extends Fragment {
         }
     }
 
-    private void calculateData(){
+    private void calculateData(int setId){
         //get data for this set
-        ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
+        String dataPointString = db.exerciseDao().getSetDataValuesStr(setId);
+        ArrayList<Integer> currSetData = DataPointConverters.fromString(dataPointString);
+        //ArrayList<DataPoint> currSetData = mCallback.getCurrentSetArray();
 
         //calculations and data
 
-        int setId = db.exerciseDao().getHighestSetID();
+       //int setId = db.exerciseDao().getHighestSetID();
         SetData setDat = db.exerciseDao().getSetData(setId);
         peakAverage = setDat.getPeakAverage();
 
@@ -123,9 +143,11 @@ public class Chart extends Fragment {
             prevActivation = prevSetData.getPeakAverage();
         }
         ExerciseData exData = db.exerciseDao().getExerciseData(setDat.getExerciseID());
-        overallActivation = db.exerciseDao().getOverallActivation(exData.getExerciseName());
+        double overallActivationUnrounded = db.exerciseDao().getOverallActivation(exData.getExerciseName());
+        DecimalFormat df = new DecimalFormat("#.##");
+        overallActivation = Double.valueOf(df.format(overallActivationUnrounded));
 
-        //chart data display
+                //chart data display
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
 
@@ -137,9 +159,7 @@ public class Chart extends Fragment {
         ArrayList<Entry> yValues = new ArrayList<>();
 
         for(int i = 0; i < currSetData.size(); i++){
-            DataPoint currData = currSetData.get(i);
-            int newVal = currData.getVal();
-            long newTime = currData.getDataTimeStamp();
+            int newVal = currSetData.get(i);
 
             //should probably be using newTime instead of i here
             yValues.add(new Entry(i, newVal));

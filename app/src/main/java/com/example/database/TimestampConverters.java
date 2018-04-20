@@ -9,13 +9,11 @@ import java.util.Date;
 public class TimestampConverters {
 
 
-    static DateFormat df = new SimpleDateFormat();
-
     @TypeConverter
     public static Date fromString(String value) {
         if (value != null) {
             try {
-                return df.parse(value);
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(value);
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
             }

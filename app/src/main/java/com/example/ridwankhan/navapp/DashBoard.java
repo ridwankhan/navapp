@@ -1,6 +1,7 @@
 package com.example.ridwankhan.navapp;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.Uri;
@@ -35,6 +36,7 @@ public class DashBoard extends Fragment {
     Integer Set = 0;
     Integer Weight = 0;
     Double Activation = 0.0;
+    int SetId;
     private AppDatabase db;
 
     private OnFragmentInteractionListener mListener;
@@ -64,7 +66,7 @@ public class DashBoard extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_dash_board, container, false);
@@ -85,6 +87,7 @@ public class DashBoard extends Fragment {
             Set = setData[i].getSetNumber();
             Weight = setData[i].getWeight();
             Activation = setData[i].getPeakAverage();
+            SetId = setData[i].getSetID();
 
             //check the data
             if (Date.length() == 0) {
@@ -104,6 +107,7 @@ public class DashBoard extends Fragment {
             mLog.setSet(Set);
             mLog.setWeight(Weight);
             mLog.setActivation(Activation);
+            mLog.setSetId(SetId);
             prevData.add(mLog);
             listAdapter.notifyDataSetChanged();
         }
@@ -112,7 +116,9 @@ public class DashBoard extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListData mLog = listAdapter.getItem(position);
-                Toast.makeText(getActivity(), "Date: " + mLog.getDate() + "  Score: " + mLog.getScore() + "  Muscle: " + mLog.getMuscle() + "  Exercise: " + mLog.getExercise() + "  Set: " + mLog.getSet() + "  Weight: " + mLog.getWeight() + "  Activation: " + mLog.getActivation(), Toast.LENGTH_LONG).show();
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(((ViewGroup)getView().getParent()).getId(), Chart.newInstance(mLog.getSetId())).commit();
+                //Toast.makeText(getActivity(), "Date: " + mLog.getDate() + "  Score: " + mLog.getScore() + "  Muscle: " + mLog.getMuscle() + "  Exercise: " + mLog.getExercise() + "  Set: " + mLog.getSet() + "  Weight: " + mLog.getWeight() + "  Activation: " + mLog.getActivation(), Toast.LENGTH_LONG).show();
             }
         });
 

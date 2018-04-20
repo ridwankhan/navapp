@@ -35,8 +35,6 @@ public class ListViewHolder extends LinearLayout {
         TextView tvDate = (TextView) findViewById(R.id.date_detail);
         tvDate.setText(mLog.getDate() + "");
 
-        TextView tvScore = (TextView) findViewById(R.id.score_detail);
-        tvScore.setText(mLog.getScore() + "");
 
         TextView tvMuscle = (TextView) findViewById(R.id.muscle_detail);
         tvMuscle.setText(mLog.getMuscle() + "");

@@ -39,7 +39,7 @@
             android:id="@+id/muscle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Muscle Worked"
+            android:text="Muscle Worked:"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
@@ -52,7 +52,7 @@
             android:id="@+id/exercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exercise"
+            android:text="Exercise:"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
@@ -65,7 +65,7 @@
             android:id="@+id/weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Weight"
+            android:text="Weight (lbs):"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
@@ -78,7 +78,7 @@
             android:id="@+id/set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Set"
+            android:text="Set Number:"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
